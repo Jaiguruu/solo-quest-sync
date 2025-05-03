@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -102,19 +101,19 @@ export default {
 				'glow': {
 					'0%, 100%': { 
 						opacity: '1',
-						boxShadow: '0 0 10px 2px rgba(187, 134, 252, 0.5), 0 0 20px 5px rgba(187, 134, 252, 0.3)' 
+						boxShadow: '0 0 8px 1px rgba(187, 134, 252, 0.3)'
 					},
 					'50%': { 
-						opacity: '0.7',
-						boxShadow: '0 0 15px 3px rgba(187, 134, 252, 0.7), 0 0 30px 8px rgba(187, 134, 252, 0.5)' 
+						opacity: '0.9',
+						boxShadow: '0 0 12px 2px rgba(187, 134, 252, 0.4)'
 					},
 				},
 				'pulse-neon': {
 					'0%, 100%': { 
-						boxShadow: '0 0 10px 2px rgba(187, 134, 252, 0.5), 0 0 20px 5px rgba(187, 134, 252, 0.3)' 
+						boxShadow: '0 0 5px 1px rgba(187, 134, 252, 0.2)'
 					},
 					'50%': { 
-						boxShadow: '0 0 15px 3px rgba(187, 134, 252, 0.7), 0 0 30px 8px rgba(187, 134, 252, 0.5)' 
+						boxShadow: '0 0 10px 2px rgba(187, 134, 252, 0.4)'
 					},
 				},
 				'fade-in': {
@@ -146,8 +145,8 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 6s ease-in-out infinite',
-				'glow': 'glow 3s ease-in-out infinite',
-				'pulse-neon': 'pulse-neon 2s ease-in-out infinite',
+				'glow': 'glow 8s ease-in-out infinite alternate',
+				'pulse-neon': 'pulse-neon 8s ease-in-out infinite alternate',
 				'fade-in': 'fade-in 0.3s ease-out',
 				'scale-in': 'scale-in 0.2s ease-out',
 				'slide-in-right': 'slide-in-right 0.3s ease-out',

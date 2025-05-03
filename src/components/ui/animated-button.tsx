@@ -16,7 +16,7 @@ export const AnimatedButton = React.forwardRef<HTMLButtonElement, AnimatedButton
         className={cn(
           "relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white rounded-lg group transition-all duration-300",
           {
-            "bg-solosync-purple hover:bg-opacity-80 animate-pulse-neon": variant === "default",
+            "bg-solosync-purple hover:bg-opacity-90": variant === "default",
             "bg-transparent border-2 border-solosync-neon hover:bg-solosync-purple/10": variant === "outline",
             "bg-transparent hover:bg-solosync-purple/10": variant === "ghost",
             "text-sm px-4 py-2": size === "sm",
@@ -25,6 +25,10 @@ export const AnimatedButton = React.forwardRef<HTMLButtonElement, AnimatedButton
           },
           className
         )}
+        style={{
+          boxShadow: variant === "default" ? "0 0 8px 1px rgba(155, 135, 245, 0.3)" : "none",
+          transition: "all 0.5s ease"
+        }}
         {...props}
       >
         <span className="relative z-10">{children}</span>
