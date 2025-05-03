@@ -1,11 +1,116 @@
 
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AnimatedButton } from "@/components/ui/animated-button";
 import { GlowingText } from "@/components/ui/glowing-text";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/utils/supabase";
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleEmailSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !password || !firstName || !lastName) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!agreedToTerms) {
+      toast({
+        title: "Error",
+        description: "You must agree to the Terms of Service and Privacy Policy",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+          },
+        },
+      });
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      toast({
+        title: "Success",
+        description: "Account created! Check your email for confirmation.",
+        variant: "default",
+      });
+      
+      navigate("/login");
+    } catch (error) {
+      console.error("Signup error:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleGoogleSignup = async () => {
+    try {
+      setLoading(true);
+      
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Google signup error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to sign up with Google",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-solosync-black">
       <Navbar />
@@ -25,7 +130,11 @@ const Signup = () => {
             
             <div className="space-y-6">
               <div className="space-y-4">
-                <AnimatedButton className="w-full flex items-center justify-center gap-3">
+                <AnimatedButton 
+                  className="w-full flex items-center justify-center gap-3"
+                  onClick={handleGoogleSignup}
+                  disabled={loading}
+                >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z" />
                   </svg>
@@ -42,7 +151,7 @@ const Signup = () => {
                 </div>
               </div>
               
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleEmailSignup}>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="first-name">
@@ -55,6 +164,8 @@ const Signup = () => {
                       autoComplete="given-name"
                       required
                       className="w-full px-3 py-2 bg-solosync-black border border-solosync-purple/50 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-solosync-neon"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                     />
                   </div>
                   <div>
@@ -68,6 +179,8 @@ const Signup = () => {
                       autoComplete="family-name"
                       required
                       className="w-full px-3 py-2 bg-solosync-black border border-solosync-purple/50 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-solosync-neon"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -84,6 +197,8 @@ const Signup = () => {
                     required
                     className="w-full px-3 py-2 bg-solosync-black border border-solosync-purple/50 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-solosync-neon"
                     placeholder="hunter@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 
@@ -98,6 +213,8 @@ const Signup = () => {
                     autoComplete="new-password"
                     required
                     className="w-full px-3 py-2 bg-solosync-black border border-solosync-purple/50 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-solosync-neon"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
                 
@@ -108,6 +225,8 @@ const Signup = () => {
                     type="checkbox"
                     required
                     className="h-4 w-4 text-solosync-purple focus:ring-solosync-neon border-gray-600 rounded"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
                   />
                   <label htmlFor="terms" className="ml-2 block text-sm text-gray-400">
                     I agree to the <Link to="/terms" className="text-solosync-neon hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-solosync-neon hover:underline">Privacy Policy</Link>
@@ -115,8 +234,8 @@ const Signup = () => {
                 </div>
                 
                 <div>
-                  <AnimatedButton type="submit" className="w-full">
-                    Create Account
+                  <AnimatedButton type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Creating Account..." : "Create Account"}
                   </AnimatedButton>
                 </div>
               </form>
