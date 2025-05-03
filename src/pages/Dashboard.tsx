@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { GlowingText } from "@/components/ui/glowing-text";
 import { Navbar } from "@/components/navbar";
@@ -9,14 +10,29 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/utils/supabase";
 
+interface UserStats {
+  level: number;
+  rank: string;
+  xp: number;
+  tasksCompleted: number;
+}
+
+interface Task {
+  id: string;
+  user_id: string;
+  description: string;
+  completed: boolean;
+  created_at: string;
+}
+
 const Dashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<UserStats>({
     level: 1,
     rank: "E",
     xp: 0,
@@ -26,23 +42,23 @@ const Dashboard = () => {
   // Check if user is logged in
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
       
-      if (!session) {
+      if (!data?.session) {
         navigate('/login');
         return;
       }
       
-      setUser(session.user);
-      fetchUserData(session.user.id);
-      fetchTasks(session.user.id);
+      setUser(data.session.user);
+      fetchUserData(data.session.user.id);
+      fetchTasks(data.session.user.id);
     };
     
     checkUser();
   }, [navigate]);
   
   // Fetch user data from Supabase
-  const fetchUserData = async (userId) => {
+  const fetchUserData = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from('user_stats')
@@ -94,7 +110,7 @@ const Dashboard = () => {
   };
   
   // Fetch tasks from Supabase
-  const fetchTasks = async (userId) => {
+  const fetchTasks = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from('tasks')
@@ -127,7 +143,8 @@ const Dashboard = () => {
       
       const { error } = await supabase
         .from('tasks')
-        .insert([newTaskObj]);
+        .insert([newTaskObj])
+        .select();
         
       if (error) {
         toast({
@@ -153,7 +170,7 @@ const Dashboard = () => {
   };
   
   // Complete task
-  const completeTask = async (taskId) => {
+  const completeTask = async (taskId: string) => {
     try {
       // Update task in database
       const { error } = await supabase

@@ -1,5 +1,5 @@
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 
 // Get environment variables or use fallbacks for development
@@ -24,24 +24,35 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 // Create a supabase client instance with error handling
 // This will work when proper env variables are set, and provide a clear error when they're not
-const createSupabaseClient = () => {
+const createSupabaseClient = (): SupabaseClient => {
   try {
     if (!supabaseUrl || !supabaseAnonKey) {
       // Return a mock client that doesn't actually connect to Supabase
       // This prevents the app from crashing immediately, allowing error handling to display
       return {
         auth: {
-          getSession: async () => ({ data: { session: null } }),
-          signInWithPassword: async () => ({ error: { message: 'Supabase not configured' } }),
-          signInWithOAuth: async () => ({ error: { message: 'Supabase not configured' } }),
-          signOut: async () => ({}),
+          getSession: async () => ({ data: { session: null }, error: null }),
+          signInWithPassword: async () => ({ data: null, error: { message: 'Supabase not configured', code: 'not_configured' } }),
+          signInWithOAuth: async () => ({ data: null, error: { message: 'Supabase not configured', code: 'not_configured' } }),
+          signOut: async () => ({ error: null }),
+          signUp: async () => ({ data: null, error: { message: 'Supabase not configured', code: 'not_configured' } }),
         },
         from: () => ({
-          select: () => ({ eq: () => ({ single: async () => ({ error: { message: 'Supabase not configured' } }) }) }),
-          insert: () => ({ select: async () => ({ error: { message: 'Supabase not configured' } }) }),
-          update: () => ({ eq: async () => ({ error: { message: 'Supabase not configured' } }) }),
+          select: () => ({
+            eq: () => ({
+              single: async () => ({ data: null, error: { message: 'Supabase not configured', code: 'not_configured' } }),
+              order: () => ({ data: null, error: { message: 'Supabase not configured', code: 'not_configured' } }),
+            }),
+            order: () => ({ data: null, error: { message: 'Supabase not configured', code: 'not_configured' } }),
+          }),
+          insert: () => ({
+            select: async () => ({ data: null, error: { message: 'Supabase not configured', code: 'not_configured' } })
+          }),
+          update: () => ({
+            eq: async () => ({ data: null, error: { message: 'Supabase not configured', code: 'not_configured' } })
+          }),
         }),
-      };
+      } as unknown as SupabaseClient;
     }
     
     // Create and return the actual Supabase client when credentials are available
@@ -52,17 +63,28 @@ const createSupabaseClient = () => {
     // Return the mock client on error
     return {
       auth: {
-        getSession: async () => ({ data: { session: null } }),
-        signInWithPassword: async () => ({ error: { message: 'Supabase connection error' } }),
-        signInWithOAuth: async () => ({ error: { message: 'Supabase connection error' } }),
-        signOut: async () => ({}),
+        getSession: async () => ({ data: { session: null }, error: null }),
+        signInWithPassword: async () => ({ data: null, error: { message: 'Supabase connection error', code: 'connection_error' } }),
+        signInWithOAuth: async () => ({ data: null, error: { message: 'Supabase connection error', code: 'connection_error' } }),
+        signOut: async () => ({ error: null }),
+        signUp: async () => ({ data: null, error: { message: 'Supabase connection error', code: 'connection_error' } }),
       },
       from: () => ({
-        select: () => ({ eq: () => ({ single: async () => ({ error: { message: 'Supabase connection error' } }) }) }),
-        insert: () => ({ select: async () => ({ error: { message: 'Supabase connection error' } }) }),
-        update: () => ({ eq: async () => ({ error: { message: 'Supabase connection error' } }) }),
+        select: () => ({
+          eq: () => ({
+            single: async () => ({ data: null, error: { message: 'Supabase connection error', code: 'connection_error' } }),
+            order: () => ({ data: null, error: { message: 'Supabase connection error', code: 'connection_error' } }),
+          }),
+          order: () => ({ data: null, error: { message: 'Supabase connection error', code: 'connection_error' } }),
+        }),
+        insert: () => ({
+          select: async () => ({ data: null, error: { message: 'Supabase connection error', code: 'connection_error' } })
+        }),
+        update: () => ({
+          eq: async () => ({ data: null, error: { message: 'Supabase connection error', code: 'connection_error' } })
+        }),
       }),
-    };
+    } as unknown as SupabaseClient;
   }
 };
 
