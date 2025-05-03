@@ -14,7 +14,16 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Dashboard from "./pages/Dashboard";
 
-const queryClient = new QueryClient();
+// Create a new QueryClient instance outside of the App component
+// This ensures it's only created once
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

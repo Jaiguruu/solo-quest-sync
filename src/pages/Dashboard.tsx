@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { GlowingText } from "@/components/ui/glowing-text";
 import { Navbar } from "@/components/navbar";
@@ -8,12 +7,7 @@ import { AnimatedButton } from "@/components/ui/animated-button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
-
-// Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase } from "@/utils/supabase";
 
 const Dashboard = () => {
   const { toast } = useToast();
