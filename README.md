@@ -4,9 +4,7 @@ HERE YOU CAN LEVEL FOR WHO YOU ARE MEANT TO BE!!!
 
 **Arise: A Not-So-Typical To-Do App**
 
-
 This project began the way many do: I was bored, watching Sung Jinwoo kick butt, and thought, "What if my to-do list felt more like that?"
-
 So, I built this. It's my take on turning the daily grind into a grand quest.
 
 **Live Application:** [**SOLO SYNC**](https://solo-quest-sync-1mjdu6i00-pranav-jais-projects.vercel.app/)
