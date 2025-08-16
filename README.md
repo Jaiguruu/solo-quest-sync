@@ -1,8 +1,13 @@
 **Welcome to SOLOSYNC**
 
 HERE YOU CAN LEVEL FOR WHO YOU ARE MEANT TO BE!!!
+**Live Application:** [**SOLO SYNC**](https://solo-quest-sync-1mjdu6i00-pranav-jais-projects.vercel.app/)
 
 **USEAGE** 
+
+![A screenshot of the AI-powered portfolio chat interface in action.](./screenshot.png)
+
+
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
